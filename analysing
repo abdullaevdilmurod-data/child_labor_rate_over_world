@@ -1,0 +1,87 @@
+drop table if exists country;
+create table country1(
+	country text,
+	country_Code varchar(10),
+	region text,
+	year int,
+	child_labor_rate_percent numeric,
+	estimated_children_millions numeric,
+	gender	text,
+	age_Group text
+);
+
+select *from country1;
+
+--Выведите топ-5 стран с самым высоким процентом детского труда  за 2011 год.
+select *from country1
+order by child_labor_rate_percent desc
+limit(5);
+
+--сравнение регионов
+select region, round(avg(child_labor_rate_percent),2) as avg_percent
+from country1
+group by region;
+
+select year,
+round(avg(estimated_children_millions),2) as value_total
+from country1
+group by year
+order by year;
+
+--Посчитать средний процент детского труда и общую численность работающих детей (в миллионах) 
+--для каждого региона в 2010 году.
+
+select 
+region,
+round(avg(child_labor_rate_percent),2) as avg_child_labor_rate,
+sum(estimated_children_millions) as sum_estimated
+from country1
+where year=2010
+group by region;
+
+
+--Разделим страны на 3 категории по уровню детского труда: 'Low' (ниже 5%), 
+--'Medium' (5-15%), 'High' (выше 15%). Посчитайте количество стран в каждой категории.
+
+select 
+case
+	when child_labor_rate_percent<5 then 'ниже 5%'
+	when child_labor_rate_percent between 5 and 15 then '5-15%'
+	else 'выше 15%'
+end as rating_percentage,
+count(country) as country_rate_by_category
+from country1
+group by rating_percentage
+--having count(*);
+
+--Найти страны, в которых за период с 2010 по 2013 год процент детского труда снизился.
+--Вывести название страны, значение в 2010, значение в 2013 и разницу.
+
+select c1.country,
+c1.child_labor_rate_percent as rate_2010,
+c2.child_labor_rate_percent as rate_2013,
+(c2.child_labor_rate_percent-c1.child_labor_rate_percent) as difference
+from country1 as c1
+join country1 as c2
+on c1.country=c2.country
+where c1.year=2010
+and c2.year=2013
+order by c2.year desc;
+--Найдите страны, для которых в данных за один и тот же год указаны разные значения процента детского труда
+select country , count(child_labor_rate_percent) as ca
+from country1
+where year=year
+group by country
+having count(*)>=2
+order by ca desc;
+
+--Рассчитать, какой процент от общего количества работающих детей в мире 
+--приходится на каждый регион в 2011 году.
+
+select region,
+(sum(child_labor_rate_percent)) as percent_by_region
+from country1
+where year=2011
+group by region;
+
+
