@@ -22,6 +22,7 @@ select region, round(avg(child_labor_rate_percent),2) as avg_percent
 from country1
 group by region;
 
+--среднее и сгруппированное  по странам 
 select year,
 round(avg(estimated_children_millions),2) as value_total
 from country1
@@ -54,8 +55,8 @@ from country1
 group by rating_percentage
 --having count(*);
 
---Найти страны, в которых за период с 2010 по 2013 год процент детского труда снизился.
---Вывести название страны, значение в 2010, значение в 2013 и разницу.
+--Определил страны, в которых за период с 2010 по 2013 год процент детского труда снизился.
+--Выводить название страны, значение в 2010, значение в 2013 и разницу.
 
 select c1.country,
 c1.child_labor_rate_percent as rate_2010,
